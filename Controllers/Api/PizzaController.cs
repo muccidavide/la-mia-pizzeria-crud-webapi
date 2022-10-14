@@ -7,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace la_mia_pizzeria_crud_mvc.Controllers.Api
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class PizzaController : ControllerBase
     {
@@ -17,12 +17,20 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
             _db = new PizzaContext();
         }
 
-        public IActionResult Get()
+        public IActionResult GetPizzas()
         {
            
             List<Pizza> pizzas = _db.Pizzas.ToList();
             
             return Ok(pizzas);
+        }
+
+        [HttpGet("{id:int}")]
+        public IActionResult GetPizza(int id)
+        {
+            Pizza pizza = _db.Pizzas.SingleOrDefault(pizza => pizza.PizzaId == id);
+
+            return Ok(pizza);
         }
     }
 }

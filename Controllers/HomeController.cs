@@ -23,6 +23,15 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             return View();
         }
 
+        public IActionResult Details(int id)
+        {
+           /* Pizza pizza;
+
+            pizza = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).Include(dbPizza => dbPizza.Category).First();*/
+
+            return View("Details", id);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

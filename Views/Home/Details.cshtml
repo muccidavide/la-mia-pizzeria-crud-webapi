@@ -1,9 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
     Layout = "_MyLayout";
+    @model int;
 
 }
-
 
 
 <div class="text-center m-auto">
@@ -16,7 +16,7 @@
 </div>
 
 <script type="text/javascript">
-    axios.get('/api/pizza/').then(
+    axios.get('/api/pizza/@Model').then(
         result => {
             console.log(result);
             document.querySelector('.js_loading').classList.add('d-none');
@@ -27,24 +27,24 @@
             document.querySelector('.js_no_pizza').classList.add('d-none');
             document.querySelector('.js_pizza_table').innerHTML = '';
 
-            result.data.forEach(pizza => {
+            let pizza = result.data;
 
-                var url = '@Html.Raw(@Url.Action("Details", "Home"))/' + pizza.pizzaId;
-                
-                console.log('pizza', pizza);
-                document.querySelector('.js_pizza_table').innerHTML +=
-                    `<div class="p-3">
-                         <div class="pizza_menu card col mb-3 fw-bold p-2 ">
-                                             <a href="${url}" >
-                       <img class="card-img-top" width="100" src="${pizza.image}" />
-                           </a>
-                        <div class="card-body text-black">
-                            <h3>${pizza.name}</h3>
-                        </div>
-                    </div>
-                        </div>
-                        `;
-            })
+            var url = '@Html.Raw(@Url.Action("Details", "Pizza"))/' + pizza.pizzaId;
+
+            console.log('pizza', pizza);
+            document.querySelector('.js_pizza_table').innerHTML +=
+                `<div class="p-3">
+                                 <div class="pizza_menu card col mb-3 fw-bold p-2 ">
+                                                     <a href="${url}" >
+                               <img class="card-img-top" width="100" src="${pizza.image}" />
+                                   </a>
+                                <div class="card-body text-black">
+                                    <h3>${pizza.name}</h3>
+                                </div>
+                            </div>
+                                </div>
+                                `;
+
         }
     ).catch(
         error => {
