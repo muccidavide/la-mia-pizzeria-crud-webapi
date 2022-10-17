@@ -1,7 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Mvc.ViewEngines
 @inject IWebHostEnvironment Environment
 @inject ICompositeViewEngine Engine
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-   
+
 </head>
 <body>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -31,9 +34,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Pizza" asp-action="Index">Menu</a>
-                        </li>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Pizza" asp-action="Index">Edit Menu</a>
+                            </li>
+                        }
                         <li class="nav-item"><a class="nav-link text-white" href="@Url.Action("Privacy","Home")">Privacy</a> </li>
                     </ul>
                 </div>
@@ -56,11 +62,11 @@
         </nav>
     </header>
 
-        <main role="main" class="pb-3">
+    <main role="main" class="pb-3">
         <div class="container">
             @RenderBody()
         </div>
-        </main>
+    </main>
 
 
     <footer class="border-top footer text-white d-flex align-items-center">

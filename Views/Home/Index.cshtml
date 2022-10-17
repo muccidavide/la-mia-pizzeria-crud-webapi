@@ -8,6 +8,9 @@
 
 <div class="text-center m-auto">
     <h1>Pizzeria da Davide</h1>
+    <div>
+        <input type="text" class="input-form js_search" />
+    </div>
     <div class="js_loading">Loading...</div>
     <div class="js_no_pizza d-none">
     </div>
@@ -16,39 +19,65 @@
 </div>
 
 <script type="text/javascript">
-    axios.get('/api/pizza/').then(
-        result => {
-            console.log(result);
-            document.querySelector('.js_loading').classList.add('d-none');
-            if (result.data.length == 0) {
-                document.querySelector('.js_no_pizza').classList.remove('d-none');
-                document.querySelector('.js_pizza_table').classList.add('d-none');
+    getPizza("");
+
+    document.querySelector(".js_search").addEventListener('keyup', searchPizza);
+
+    function searchPizza(e){
+        let title = this.value;
+
+        getPizza(title)
+    }
+
+    function getPizza(title){
+
+        axios.get('/api/pizza/', {
+            params:{
+                title:title
             }
-            document.querySelector('.js_no_pizza').classList.add('d-none');
-            document.querySelector('.js_pizza_table').innerHTML = '';
+        }).then(
+            result => {
+                console.log(result);
 
-            result.data.forEach(pizza => {
+                document.querySelector('.js_loading').classList.add('d-none');
+                if (result.data.length == 0) {
+                    document.querySelector('.js_no_pizza').classList.remove('d-none');
+                    document.querySelector('.js_pizza_table').classList.add('d-none');
+                }
+                document.querySelector('.js_no_pizza').classList.add('d-none');
+                document.querySelector('.js_pizza_table').innerHTML = '';
 
-                var url = '@Html.Raw(@Url.Action("Details", "Home"))/' + pizza.pizzaId;
-                
-                console.log('pizza', pizza);
-                document.querySelector('.js_pizza_table').innerHTML +=
-                    `<div class="p-3">
-                         <div class="pizza_menu card col mb-3 fw-bold p-2 ">
-                                             <a href="${url}" >
-                       <img class="card-img-top" width="100" src="${pizza.image}" />
-                           </a>
-                        <div class="card-body text-black">
-                            <h3>${pizza.name}</h3>
+                result.data.forEach(pizza => {
+
+                    var url = '@Html.Raw(@Url.Action("Details", "Home"))/' + pizza.pizzaId;
+                    //var url = '/menu/pizza/'+ pizza.pizzaId;
+
+                    console.log('pizza', pizza);
+                    document.querySelector('.js_pizza_table').innerHTML +=
+                        `<div class="p-3">
+                             <div class="pizza_menu card col mb-3  p-2 ">
+                                                 <a href="${url}" >
+                           <img class="card-img-top" width="100" src="${pizza.image}" />
+                               </a>
+                            <div class="card-body text-black">
+                                <h2>${pizza.name}</h3>
+                                <p>${pizza.description}</p>
+                                <p>${pizza.price} €</p>
+
+                                </div>
                         </div>
-                    </div>
-                        </div>
-                        `;
-            })
-        }
-    ).catch(
-        error => {
-            console.log(error)
-        }
-    )
+                            </div>
+                            `;
+                })
+            }
+        ).catch(
+            error => {
+                console.log(error)
+            }
+        )
+
+
+    }
+   
+
 </script>

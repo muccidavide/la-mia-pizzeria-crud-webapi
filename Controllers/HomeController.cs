@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 namespace la_mia_pizzeria_crud_mvc.Controllers
 {
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -23,6 +24,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             return View();
         }
 
+        //[HttpGet("{id:int}")]
         public IActionResult Details(int id)
         {
            /* Pizza pizza;
