@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace la_mia_pizzeria_crud_mvc.Controllers
 {
-
+   
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

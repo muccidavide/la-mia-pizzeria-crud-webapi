@@ -1,15 +1,14 @@
 ﻿@{
+
     ViewData["Title"] = "Home Page";
     Layout = "_MyLayout";
 
 }
 
-
-
 <div class="text-center m-auto">
     <h1>Pizzeria da Davide</h1>
     <div>
-        <input type="text" class="input-form js_search" />
+        <input type="text" class="input-form js_search" placeholder="Cerca un pizza" />
     </div>
     <div class="js_loading">Loading...</div>
     <div class="js_no_pizza d-none">
@@ -19,21 +18,26 @@
 </div>
 
 <script type="text/javascript">
+
     getPizza("");
 
-    document.querySelector(".js_search").addEventListener('keyup', searchPizza);
+    var searchtimer;
 
-    function searchPizza(e){
-        let title = this.value;
+        document.querySelector(".js_search").addEventListener("input", (e) => {
+            clearTimeout(searchtimer); 
+            let title = e.target.value;
+            
+            searchtimer = setTimeout(() => {
 
-        getPizza(title)
-    }
+                getPizza(title);
+            }, 1000);
+        });
 
-    function getPizza(title){
+    function getPizza(title) {
 
         axios.get('/api/pizza/', {
-            params:{
-                title:title
+            params: {
+                title: title
             }
         }).then(
             result => {
@@ -55,19 +59,20 @@
                     console.log('pizza', pizza);
                     document.querySelector('.js_pizza_table').innerHTML +=
                         `<div class="p-3">
-                             <div class="pizza_menu card col mb-3  p-2 ">
-                                                 <a href="${url}" >
-                           <img class="card-img-top" width="100" src="${pizza.image}" />
-                               </a>
-                            <div class="card-body text-black">
-                                <h2>${pizza.name}</h3>
-                                <p>${pizza.description}</p>
-                                <p>${pizza.price} €</p>
+                                  <a href="${url}" >
+                                 <div class="pizza_menu card col mb-3  p-2 ">
 
-                                </div>
-                        </div>
+                               <img class="card-img-top" width="100" src="${pizza.image}" />
+
+                                <div class="card-body text-black">
+                                    <h4 class="fw-bold">${pizza.name}</h4>
+                                    <p>${pizza.price} €</p>
+
+                                    </div>
                             </div>
-                            `;
+                                 </a>
+                                </div>
+                                `;
                 })
             }
         ).catch(
@@ -78,6 +83,6 @@
 
 
     }
-   
+
 
 </script>
