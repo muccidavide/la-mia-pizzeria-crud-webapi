@@ -12,10 +12,14 @@
 
 </div>
 <div class="bg-black p-5">
-    <div class="alert alert-danger" role="alert">
-        
-        @Html.ValidationSummary()
-    </div>
+    @if (!Html.ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger" role="alert">
+
+            @Html.ValidationSummary()
+        </div>
+    }
+    
 
     <ul>
         @foreach (Ingredient ingredient in Model.Ingredients)

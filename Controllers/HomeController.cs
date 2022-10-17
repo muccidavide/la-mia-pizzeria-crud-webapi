@@ -24,12 +24,9 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             return View();
         }
 
-        //[HttpGet("{id:int}")]
+        //[HttpGet("{id:int}")] impostato di default
         public IActionResult Details(int id)
         {
-           /* Pizza pizza;
-
-            pizza = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).Include(dbPizza => dbPizza.Category).First();*/
 
             return View("Details", id);
         }

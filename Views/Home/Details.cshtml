@@ -8,10 +8,14 @@
 
 <div class="text-center m-auto">
     <h1>Pizzeria da Davide</h1>
-    <div class="js_loading">Loading...</div>
-    <div class="js_no_pizza d-none">
+    <div class="js_loading">
+        <img width="100" src="/img/loader.gif" />
+        <p>Loading...</p>
     </div>
-    <div class="js_pizza_table text-center m-auto row row-cols-1 row-cols-md-2 row-cols-lg-3">
+    <div class="js_no_pizza d-none">
+        <p>La pizza non è stata trovata</p>
+    </div>
+    <div class="js_pizza_table text-center m-auto w-50">
     </div>
 </div>
 
@@ -32,17 +36,13 @@
 
             let pizza = result.data;
 
-            //forEach(ingredient in pizza.ingredients){
-            //    console.log(ingredient.name)
-            //}
-
             console.log('pizza', pizza);
             document.querySelector('.js_pizza_table').innerHTML +=
 
                 `
                     <div class="p-3">
                       <div class="pizza_menu card col mb-3 fw-bold p-2 ">
-                       <img class="card-img-top" width="100" src="${pizza.image}" />
+                       <img class="card-img-top w-100" src="${pizza.image}" />
                         <div class="card-body text-black">
                         <h3>${pizza.name}</h3>
                             <ul class="js_ingredients list-group">
@@ -53,6 +53,7 @@
                       </div>
                  `;
             
+            // Render to page ingredinets list
             result.data.ingredients.forEach(ingredient => {
                 console.log('ingrediente', ingredient.name);
                 document.querySelector('.js_ingredients').innerHTML +=
@@ -65,7 +66,14 @@
         }
     ).catch(
         error => {
-            console.log(error)
+            console.log(error);
+            document.querySelector('.js_pizza_table').innerHTML +=
+
+                `
+                        <div class="p-3">
+                          <p>Ops qualcosa è andato storto!</p>
+                          </div>
+                     `;
         }
     )
 </script>
