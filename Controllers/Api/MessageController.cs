@@ -1,6 +1,7 @@
 ﻿using la_mia_pizzeria_crud_mvc;
 using la_mia_pizzeria_post.Models;
 using la_mia_pizzeria_static.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,12 +30,24 @@ namespace la_mia_pizzeria_post.Controllers.Api
             _db.SaveChanges();
 
 
-            return RedirectToAction("Contact", "Home");
+            return Ok();
 
         }
 
+        [Authorize]
+        public IActionResult Get(string? title)
+        {
+            if (title == null)
+            {
+                List<Message> messages = _db.Messages.ToList();
+                return Ok(messages);
+            }
+            else
+            {
+                List<Message> messages = _db.Messages.Where(p => p.Name.ToLower().Contains(title)).ToList();
+                return Ok(messages);
+            }
+        }
 
-
-        
     }
 }

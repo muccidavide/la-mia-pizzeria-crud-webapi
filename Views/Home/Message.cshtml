@@ -1,0 +1,98 @@
+﻿@using la_mia_pizzeria_post.Models
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="text-center m-auto">
+    <h1>Messaggi Ricevuti</h1>
+    <div class="row message-table">
+        <div class="w-50 m-auto mb-3">
+            <input class="form-control js_search" type="text" placeholder="Cerca un messaggio" aria-label="default input example">
+        </div>
+        <div class="js_loading">
+            <img width="100" src="/img/loader.gif" />
+            <p>Loading...</p>
+        </div>
+        <div class="js_no_message d-none">
+            <p>Nessun Messaggio trovato</p>
+        </div>
+        <table class="js_message_table table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Handle</th>
+                </tr>
+            </thead>
+            <tbody class="js_message_table" ">
+            </tbody>
+        </table>
+
+    </div>
+</div>
+<script>
+
+    getMessage("");
+
+    var searchtimer;
+
+    /// Set Timeout (1 sec) to search
+    document.querySelector(".js_search").addEventListener("input", (e) => {
+        //clear previous call
+        clearTimeout(searchtimer);
+        let title = e.target.value;
+        searchtimer = setTimeout(() => {
+
+            getMessage(title);
+        }, 1000);
+    });
+
+    function getMessage(title) {
+
+        axios.get('/api/message/get', {
+            params: {
+                title: title
+            }
+        }).then(
+            result => {
+                console.log(result);
+
+                document.querySelector('.js_loading').classList.add('d-none');
+                if (result.data.length == 0) {
+                    document.querySelector('.js_no_message').classList.remove('d-none');
+                    document.querySelector('.js_message_table').classList.add('d-none');
+                }else{
+                    document.querySelector('.js_no_message').classList.add('d-none');
+                    document.querySelector('.js_message_table').innerHTML = '';
+
+                    result.data.forEach(message => {
+
+
+                        console.log('messaggio', message);
+                        document.querySelector('.js_message_table').innerHTML +=
+                            `<tr class="text-white">
+                                    <th scope="row">${message.id}</th>
+                                        <td>${message.title}</td>
+                                        <td>${message.name}</td>
+                                        <td>${message.email}</td>
+                                        <td>${message.body}</td>
+                                </tr>
+                                    `;
+                    })
+                }
+                
+               
+            }
+        ).catch(
+            error => {
+                console.log(error)
+            }
+        )
+
+
+    }
+
+</script>

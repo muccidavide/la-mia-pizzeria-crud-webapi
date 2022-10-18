@@ -15,6 +15,7 @@
         <p>Loading...</p>
     </div>
     <div class="js_no_pizza d-none">
+        <p>Non c'è alcuna pizza</p>
     </div>
     <div class="js_pizza_table text-center m-auto row row-cols-1 row-cols-md-2 row-cols-lg-3">
     </div>
@@ -51,30 +52,33 @@
                 if (result.data.length == 0) {
                     document.querySelector('.js_no_pizza').classList.remove('d-none');
                     document.querySelector('.js_pizza_table').classList.add('d-none');
-                }
-                document.querySelector('.js_no_pizza').classList.add('d-none');
-                document.querySelector('.js_pizza_table').innerHTML = '';
+                }else{
+                    document.querySelector('.js_no_pizza').classList.add('d-none');
+                    document.querySelector('.js_pizza_table').innerHTML = '';
 
-                result.data.forEach(pizza => {
+                    result.data.forEach(pizza => {
 
-                    var url = '@Html.Raw(@Url.Action("Details", "Home"))/' + pizza.pizzaId;
-                    //var url = '/menu/pizza/'+ pizza.pizzaId;
+                        var url = '@Html.Raw(@Url.Action("Details", "Home"))/' + pizza.pizzaId;
+                        //var url = '/menu/pizza/'+ pizza.pizzaId;
 
-                    console.log('pizza', pizza);
-                    document.querySelector('.js_pizza_table').innerHTML +=
-                        `<div class="p-3">
-                          <a href="${url}" >
-                           <div class="pizza_menu card col mb-3  p-2 ">
-                            <img class="card-img-top w-100" src="${pizza.image}" />
-                             <div class="card-body text-black">
-                              <h4 class="fw-bold">${pizza.name}</h4>
-                              <span>${pizza.price} €</span>
+                        console.log('pizza', pizza);
+                        document.querySelector('.js_pizza_table').innerHTML +=
+                            `<div class="p-3">
+                              <a href="${url}" >
+                               <div class="pizza_menu card col mb-3  p-2 ">
+                                <img class="card-img-top w-100" src="${pizza.image}" />
+                                 <div class="card-body text-black">
+                                  <h4 class="fw-bold">${pizza.name}</h4>
+                                  <span>${pizza.price} €</span>
+                                 </div>
+                                </div>
+                               </a>
                              </div>
-                            </div>
-                           </a>
-                         </div>
-                        `;
-                })
+                            `;
+                    })
+                }
+                
+                
             }
         ).catch(
             error => {

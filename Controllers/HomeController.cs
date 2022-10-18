@@ -1,4 +1,5 @@
 ﻿using la_mia_pizzeria_crud_mvc.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -27,6 +28,12 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         public IActionResult Contact()
         {
             return View();
+        }
+
+        [Authorize]
+        public IActionResult Message()
+        {
+            return View("Message", "Home");
         }
 
         //[HttpGet("{id:int}")] impostato di default
