@@ -51,6 +51,7 @@ footer, header{
 .pizza_menu {
     min-height: 100%;
     width: 100%;
+    max-width: 400px;
 }
 
 main .pizza_menu img {
@@ -72,4 +73,18 @@ main .pizza_menu img:hover {
 .form-pizza{
     max-width: 600px;
    
+}
+
+.bg-pizza-black{
+    background-color: black;
+    color: white;
+    border: unset;
+}
+
+.form-control:focus {
+    background-color: white;
+    color: black !important;
+    border-color: rgb(211 80 28);
+    outline: 0;
+    box-shadow: 3px -2px 9px 0rem rgb(242 165 74);
 }

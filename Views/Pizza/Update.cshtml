@@ -15,7 +15,7 @@
     </div>
 
     <div class="container form-pizza">
-        <form asp-controller="Pizza" asp-action="Update" method="post">
+        <form asp-controller="Pizza" asp-action="Update"  method="post">
             @Html.AntiForgeryToken()
             <div class="mb-3">
                 <strong>Nome:</strong>
@@ -74,7 +74,7 @@
                             <option value="@ingredient.IngredientId">@ingredient.Name</option>
                         }
                     }
-                </select>*
+                </select>
                 
 @*
                 <select class="form-select" asp-for="SelectedIngredients" multiple size="10" asp-items="@(new SelectList(Model.Ingredients, nameof(Ingredient.IngredientId), nameof(Ingredient.Name)))">

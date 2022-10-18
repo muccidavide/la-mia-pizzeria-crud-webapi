@@ -24,9 +24,16 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             return View();
         }
 
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
         //[HttpGet("{id:int}")] impostato di default
         public IActionResult Details(int id)
         {
+            if (id == 0)
+                return NotFound();
 
             return View("Details", id);
         }

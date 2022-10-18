@@ -8,10 +8,10 @@
 }
 
 <div class="text-center mb-3">
-    <h2 class="fw-bold">Menu da Davide</h2>
+    <h2 class="fw-bold my-3">Lista di ingredienti</h2>
 
 </div>
-<div class="bg-black p-5">
+<div class="bg-pizza-black p-5">
     @if (!Html.ViewData.ModelState.IsValid)
     {
         <div class="alert alert-danger" role="alert">
@@ -19,21 +19,28 @@
             @Html.ValidationSummary()
         </div>
     }
-    
 
-    <ul>
+
+    <div class="row row-cols-1 row-cols-md-2">
         @foreach (Ingredient ingredient in Model.Ingredients)
         {
-            <li>@ingredient.Name</li>
+            <div class="col">
+            <form method="post" asp-controller="Ingredient" asp-action="Update" asp-route-id="@ingredient.IngredientId">
+                @Html.AntiForgeryToken()
+                <input asp-for="Ingredient.Name" class="form-control mb-1 text-white bg-pizza-black" type="text" value="@ingredient.Name" aria-label="default input example">
+                <span asp-validation-for="Ingredient.Name" class="text-danger"></span>
+            </form>
+            </div>
+
         }
-    </ul>
-    <form asp-controller="Ingredient" asp-action="Create" method="post">
-        @Html.AntiForgeryToken()
-        <div class="mb-3">
-            <strong>Nome:</strong>
-            <input asp-for="Ingredient.Name" class="d-block w-100" />
-            <span asp-validation-for="Ingredient.Name" class="text-danger"></span>
         </div>
-        <input type="submit" class="btn btn-small btn-info" value="Salva">
-    </form>
-</div>
+        <form asp-controller="Ingredient" asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <strong>Aggiungi un nuovo ingrediente:</strong>
+                <input asp-for="Ingredient.Name" class="d-block w-100" placeholder="pomodoro"/>
+                <span asp-validation-for="Ingredient.Name" class="text-danger"></span>
+            </div>
+            <input type="submit" class="btn btn-small btn-info" value="Salva">
+        </form>
+    </div>

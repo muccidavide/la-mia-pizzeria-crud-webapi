@@ -1,4 +1,5 @@
-﻿using la_mia_pizzeria_post.Models;
+﻿using la_mia_pizzeria_crud_mvc;
+using la_mia_pizzeria_post.Models;
 using la_mia_pizzeria_static.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ namespace la_mia_pizzeria_post.Controllers
     {
         PizzaContext _db;
         List<Ingredient> _ingredients;
-        IngredientIngredientsList ingredientIngredientsList= new IngredientIngredientsList();
+        IngredientIngredientsList ingredientIngredientsList = new IngredientIngredientsList();
 
         public IngredientController()
         {
@@ -48,7 +49,43 @@ namespace la_mia_pizzeria_post.Controllers
             }
 
 
-            return View("Index", ingredientIngredientsList);
+            return RedirectToAction("Index", ingredientIngredientsList);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Update(int id, IngredientIngredientsList ingredientData)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(ingredientIngredientsList);
+            }
+
+            Ingredient IngredientToUpdate = _db.Ingredients.Where(ing => ing.IngredientId == id).First();
+
+            if (IngredientToUpdate == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                IngredientToUpdate.Name = ingredientData.Ingredient.Name;
+               
+
+                try
+                {
+                    _db.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("StoreDataExcetipn", ex.Message);
+
+                    return View(ingredientIngredientsList);
+
+                }
+
+                return RedirectToAction("Index");
+            }
         }
     }
     

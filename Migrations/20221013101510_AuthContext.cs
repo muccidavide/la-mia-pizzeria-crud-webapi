@@ -7,8 +7,10 @@ namespace la_mia_pizzeria_post.Migrations
 {
     public partial class AuthContext : Migration
     {
+        
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new

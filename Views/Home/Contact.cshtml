@@ -1,0 +1,64 @@
+﻿@using la_mia_pizzeria_post.Models
+
+@model Message;
+
+<div>
+    <form onsubmit="sendMessage(event)">
+
+        <div class="mb-3">
+            <strong>Titolo:</strong>
+            <input id="form-title" type="text" class="d-block w-100" required />
+
+        </div>
+        <div class="mb-3">
+            <strong>Email:</strong>
+            <input id="form-email" type="email" class="d-block w-100" required />
+
+        </div>
+        <div class="mb-3">
+            <strong>Nome Completo:</strong>
+            <input id="form-fullName" type="text" class="d-block w-100" required />
+
+        </div>
+        <div class="mb-3">
+            <strong>Messagio:</strong>
+            <input id="form-body" type="text" class="d-block w-100" required />
+
+        </div>
+
+        <div class="text-end">
+            <input type="submit" class="btn btn-small btn-info" value="Salva" />
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+
+
+
+    function sendMessage(e) {
+
+        e.preventDefault();
+
+        console.log(e)
+
+        axios.post("/api/message/send", {
+
+            title: document.querySelector("#form-title").value,
+            email: document.querySelector("#form-email").value,
+            name: document.querySelector("#form-fullName").value,
+            body: document.querySelector("#form-body").value,
+
+        }).then(res => {
+            console.log(res)
+
+            document.querySelector("#form-title").value = '';
+            document.querySelector("#form-email").value = '';
+            document.querySelector("#form-fullName").value = '';
+            document.querySelector("#form-body").value = '';
+
+            alert("messaggio inviato");
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+</script>
