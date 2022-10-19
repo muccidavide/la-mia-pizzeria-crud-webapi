@@ -59,24 +59,35 @@
                     result.data.forEach(pizza => {
 
                         var url = '@Html.Raw(@Url.Action("Details", "Home"))/' + pizza.pizzaId;
+                        var url2 = 'api/pizza/delete/' + pizza.pizzaId;
                         //var url = '/menu/pizza/'+ pizza.pizzaId;
 
                         console.log('pizza', pizza);
                         document.querySelector('.js_pizza_table').innerHTML +=
                             `<div class="p-3">
-                              <a href="${url}" >
+                             
                                <div class="pizza_menu card col mb-3  p-2 ">
+                                    <a href="${url}" >
                                 <img class="card-img-top w-100" src="${pizza.image}" />
                                  <div class="card-body text-black">
                                   <h4 class="fw-bold">${pizza.name}</h4>
                                   <span>${pizza.price} €</span>
-                                 </div>
+                                  <div>
+                                       </a>
+                                 
+                                       </div>
+                                      </div>
                                 </div>
-                               </a>
+                              
                              </div>
                             `;
+
+                        
                     })
+
+                   
                 }
+
                 
                 
             }
@@ -88,6 +99,10 @@
 
 
     }
+
+   
+
+   
 
 
 </script>

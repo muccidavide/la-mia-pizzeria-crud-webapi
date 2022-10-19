@@ -44,5 +44,21 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
 
             return Ok(pizza);
         }
+
+        [HttpDelete("{id:int}")]
+        public IActionResult Delete(int id)
+        {
+            Pizza pizzaToRemove = _db.Pizzas.SingleOrDefault(pizza => pizza.PizzaId == id);
+
+            if(pizzaToRemove == null)
+            {
+                return NotFound();
+            }
+
+            _db.Pizzas.Remove(pizzaToRemove);
+           // _db.SaveChanges();
+            return Ok();
+
+        }
     }
 }

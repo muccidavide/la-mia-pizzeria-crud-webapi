@@ -49,6 +49,7 @@
                         <div class="js_ingredients">
                         </div>
                         <span><strong>Prezzo:</strong> ${pizza.price} € </span>
+                             <button class="btn btn-danger delete-btn" > Elimina</button>
                         </div>
                         </div>
                       </div>
@@ -64,6 +65,21 @@
                     `
             });
 
+            document.querySelector(".delete-btn").addEventListener("click", (e) => {
+                console.log("delete")
+
+                axios.delete('/api/pizza/' + @Model).then(res =>{
+                    console.log(res)
+
+                    window.location.href = "/";
+                }).catch(e=>{
+                    console.log(e)
+                })
+
+
+            })
+           
+
         }
     ).catch(
         error => {
@@ -77,4 +93,7 @@
                      `;
         }
     )
+
+   
+    
 </script>
