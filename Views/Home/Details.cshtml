@@ -1,4 +1,5 @@
-﻿@{
+﻿@using System.Text.Json;
+@{
     ViewData["Title"] = "Home Page";
     Layout = "_MyLayout";
     @model int;
@@ -42,6 +43,29 @@
                 <input id="pizzaPrice" type="text" class="form-control" aria-label="Amount (to the nearest Euro)">
             
             </div>
+
+            <div class="mb-3">
+                <strong>Categoria:</strong>
+                <select id="pizzaCategoryId" class="form-select js_form_categories" aria-label="Default select example">
+
+                            
+                      
+                </select>
+                
+            </div>
+
+            <div class="mb-3">
+                <strong>Ingredienti:</strong>
+                <select multiple
+                        id="SelectedIngredients"
+                        size="10"
+                        class="form-select js_form_ingredients">
+                  
+                            
+                       
+                   
+                </select>
+            </div>
            
             <div class="text-end">
                 <input type="submit" class="btn btn-small btn-info" value="Salva">
@@ -52,10 +76,13 @@
 
 <script type="text/javascript">
 
+    let pizza;
+
     //id = window.location.pathname.split('/')[3];
     axios.get('/api/pizza/' + @Model).then(
         result => {
-            console.log(result);
+            
+            pizza = result.data
             document.querySelector('.js_loading').classList.add('d-none');
             if (result.data.length == 0) {
                 document.querySelector('.js_no_pizza').classList.remove('d-none');
@@ -64,9 +91,9 @@
             document.querySelector('.js_no_pizza').classList.add('d-none');
             document.querySelector('.js_pizza_table').innerHTML = '';
 
-            let pizza = result.data;
+            pizza = result.data;
 
-            console.log('pizza', pizza);
+            
             document.querySelector('.js_pizza_table').innerHTML +=
           
 
@@ -90,10 +117,15 @@
                      </form>
                       </div>
                  `;
+
+            document.querySelector("#pizzaName").value = pizza.name
+            document.querySelector("#pizzaDescription").value = pizza.description
+            document.querySelector("#pizzaImage").value = pizza.image
+            document.querySelector("#pizzaPrice").value = pizza.price
             
             // Render to page ingredinets list
             result.data.ingredients.forEach(ingredient => {
-                console.log('ingrediente', ingredient.name);
+               
                 document.querySelector('.js_ingredients').innerHTML +=
                     `
                             <span class="fs-5">${ingredient.name}</span>
@@ -102,7 +134,7 @@
             });
 
             document.querySelector(".delete-btn").addEventListener("click", (e) => {
-                console.log("delete")
+              
 
                 axios.delete('/api/pizza/' + @Model).then(res =>{
                     console.log(res)
@@ -111,10 +143,64 @@
                 }).catch(e=>{
                     console.log(e)
                 })
-
-
             })
-           
+
+            // Get category list
+            axios.get('/api/category/').then(res => {
+
+                res.data.forEach(category => {
+                    if (category.id == pizza.categoryId) {
+                        document.querySelector('.js_form_categories').innerHTML += `
+
+                           <option selected value="${category.id}">${category.name}</option>
+
+                    `
+                    } else {
+                        document.querySelector('.js_form_categories').innerHTML += `
+
+                           <option value="${category.id}">${category.name}</option>
+
+                    `
+                    }
+
+                })
+
+            }).catch(err => {
+                console.log(err)
+            })
+            // Get ingredients list
+            axios.get('/api/ingredient/').then(res => {
+
+                res.data.forEach(ingredient => {
+
+                    let ingredientIds = [];
+
+                    pizza.ingredients.forEach(ingredientArray => {
+
+                        ingredientIds.push(ingredientArray.ingredientId)
+                    })
+
+
+
+                    if (ingredientIds.includes(ingredient.ingredientId)) {
+                        document.querySelector('.js_form_ingredients').innerHTML +=
+                            `
+                     <option selected value="${ingredient.ingredientId}">${ingredient.name}</option>
+
+                    `
+
+                    } else {
+                        document.querySelector('.js_form_ingredients').innerHTML +=
+                            `
+                        <option value="${ingredient.ingredientId}">${ingredient.name}</option>
+
+                    `
+                    }
+                })
+            }).catch(err => {
+                console.log(err)
+            })
+
 
         }
     ).catch(
@@ -129,43 +215,47 @@
                      `;
         }
     )
-
-    axios.get('/api/category/').then(res => {
-        console.log("response-category",res.data);
-
-        
-    }).catch(err=> {
-        console.log(err)
-    })
-
-    axios.get('/api/ingredient/').then(res => {
-        console.log("response-ingredient", res.data);
-
-
-    }).catch(err => {
-        console.log(err)
-    })
-
+    
     ///////////////////////
 
     function UpdatePizza(e){
         e.preventDefault();
-        console.log("ciao")
+       
         let pizzaName = document.querySelector("#pizzaName").value;
         let pizzaDescription = document.querySelector("#pizzaDescription").value
         let pizzaImage = document.querySelector("#pizzaImage").value
         let pizzaPrice = document.querySelector("#pizzaPrice").value
+        let pizzaCategory = document.querySelector(".js_form_categories").value
+        let pizzaIngredients = document.querySelector(".js_form_ingredients")
 
-        axios.put('/api/pizza/' + @Model, {
-            name: pizzaName,
-            description: pizzaDescription,
-            image: pizzaImage,
-            price: pizzaPrice,
+            var selected = Array.from(pizzaIngredients.options).filter(function (option) {
+            return option.selected;
+        }).map(function (option) {
+            return option.value;
+        });
+
+        console.log(selected)
+
+        axios.put('/api/pizza/' + @Model,  {
+            formPizza:{
+                
+            },
+            pizza: {
+                name: pizzaName,
+                description: pizzaDescription,
+                image: pizzaImage,
+                price: pizzaPrice,
+                categoryId: pizzaCategory
+            },
+            selectedIngredients: selected,
+            
 
         }).then(res => {
             console.log(res)
+            alert("pizza modificata correttamente")
         }).catch(e => {
             console.log(e)
+            alert("pizza non modificata, qualcosa è andato storto")
         })
     }
    

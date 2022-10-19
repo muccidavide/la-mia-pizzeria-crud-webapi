@@ -45,7 +45,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult Put(int id, [FromBody] Pizza pizzaData)
+        public IActionResult Put(int id, [FromBody] PizzasCategories formPizza)
         {
             Pizza pizzaToUpdate = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).Include(dbPizza => dbPizza.Category).Include(dbPizza => dbPizza.Ingredients).First();
             if (pizzaToUpdate == null)
@@ -54,10 +54,26 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
             }
             else
             {
-                pizzaToUpdate = pizzaData;
-                _db.SaveChanges();
+                pizzaToUpdate.Name = formPizza.Pizza.Name;
+                pizzaToUpdate.Description = formPizza.Pizza.Description;
+                pizzaToUpdate.Image = formPizza.Pizza.Image;
+                pizzaToUpdate.Price = formPizza.Pizza.Price;
+                pizzaToUpdate.CategoryId = formPizza.Pizza.CategoryId;
+                pizzaToUpdate.Ingredients = _db.Ingredients.Where(ingredient => formPizza.SelectedIngredients.Contains(ingredient.IngredientId)).ToList<Ingredient>();
+                
+                try
+                {
+                    _db.SaveChanges();
+                    return Ok(pizzaToUpdate);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("StoreDataExcetipn", ex.Message);
+                    return NotFound();
 
-                return Ok(pizzaToUpdate);
+                }
+
+               
             }
         }
 
@@ -72,7 +88,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
             }
 
             _db.Pizzas.Remove(pizzaToRemove);
-           // _db.SaveChanges();
+            _db.SaveChanges();
             return Ok();
 
         }
