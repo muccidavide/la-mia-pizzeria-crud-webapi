@@ -1,4 +1,5 @@
 ﻿using la_mia_pizzeria_crud_mvc;
+using la_mia_pizzeria_post.Models;
 using la_mia_pizzeria_static.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,8 +34,6 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
                 return Ok(pizzas);
             }
             
-            
-            
         }
 
         [HttpGet("{id:int}")]
@@ -43,6 +42,23 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
             Pizza pizza = _db.Pizzas.Include("Ingredients").SingleOrDefault(pizza => pizza.PizzaId == id);
 
             return Ok(pizza);
+        }
+
+        [HttpPut("{id:int}")]
+        public IActionResult Put(int id, [FromBody] Pizza pizzaData)
+        {
+            Pizza pizzaToUpdate = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).Include(dbPizza => dbPizza.Category).Include(dbPizza => dbPizza.Ingredients).First();
+            if (pizzaToUpdate == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                pizzaToUpdate = pizzaData;
+                _db.SaveChanges();
+
+                return Ok(pizzaToUpdate);
+            }
         }
 
         [HttpDelete("{id:int}")]

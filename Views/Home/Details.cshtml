@@ -17,6 +17,37 @@
     </div>
     <div class="js_pizza_table text-center m-auto w-50">
     </div>
+    <div>
+        <form onsubmit="UpdatePizza(event)">
+            <div class="mb-3">
+                <strong>Nome:</strong>
+                <input id="pizzaName" class="d-block w-100" />
+           
+            </div>
+            <div class="mb-3">
+                <strong>Descrizione:</strong>
+                <input id="pizzaDescription" class="d-block w-100" />
+              
+            </div>
+
+            <div class="mb-3">
+                <strong>Immagine </strong> <span>(fake img: "/img/img-6.jpeg"):</span>
+                <input id="pizzaImage" class="d-block w-100" />
+
+            </div>
+            <strong>Price:</strong>
+            <div class="input-group mb-3">
+
+                <span class="input-group-text">€</span>
+                <input id="pizzaPrice" type="text" class="form-control" aria-label="Amount (to the nearest Euro)">
+            
+            </div>
+           
+            <div class="text-end">
+                <input type="submit" class="btn btn-small btn-info" value="Salva">
+            </div>
+        </form>
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -41,6 +72,7 @@
 
                 `
                     <div class="p-3">
+                        <form onsubmit="UpdatePizza(event)">
                       <div class="pizza_menu card col mb-3 p-2 m-auto">
                        <img class="card-img-top w-100" src="${pizza.image}" />
                         <div class="card-body text-black">
@@ -49,9 +81,13 @@
                         <div class="js_ingredients">
                         </div>
                         <span><strong>Prezzo:</strong> ${pizza.price} € </span>
+                        <div>
                              <button class="btn btn-danger delete-btn" > Elimina</button>
+                                 <button class="btn btn-warning modify-btn" > Modifica</button>
+                            </div>
                         </div>
                         </div>
+                     </form>
                       </div>
                  `;
             
@@ -94,6 +130,45 @@
         }
     )
 
+    axios.get('/api/category/').then(res => {
+        console.log("response-category",res.data);
+
+        
+    }).catch(err=> {
+        console.log(err)
+    })
+
+    axios.get('/api/ingredient/').then(res => {
+        console.log("response-ingredient", res.data);
+
+
+    }).catch(err => {
+        console.log(err)
+    })
+
+    ///////////////////////
+
+    function UpdatePizza(e){
+        e.preventDefault();
+        console.log("ciao")
+        let pizzaName = document.querySelector("#pizzaName").value;
+        let pizzaDescription = document.querySelector("#pizzaDescription").value
+        let pizzaImage = document.querySelector("#pizzaImage").value
+        let pizzaPrice = document.querySelector("#pizzaPrice").value
+
+        axios.put('/api/pizza/' + @Model, {
+            name: pizzaName,
+            description: pizzaDescription,
+            image: pizzaImage,
+            price: pizzaPrice,
+
+        }).then(res => {
+            console.log(res)
+        }).catch(e => {
+            console.log(e)
+        })
+    }
+   
    
     
 </script>
