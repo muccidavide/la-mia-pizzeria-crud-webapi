@@ -40,7 +40,7 @@
 
     function getPizza(title) {
 
-        axios.get('/api/pizza/', {
+        axios.get('/api/pizza/get', {
             params: {
                 title: title
             }
@@ -54,6 +54,7 @@
                     document.querySelector('.js_pizza_table').classList.add('d-none');
                 }else{
                     document.querySelector('.js_no_pizza').classList.add('d-none');
+                    document.querySelector('.js_pizza_table').classList.remove('d-none');
                     document.querySelector('.js_pizza_table').innerHTML = '';
 
                     result.data.forEach(pizza => {

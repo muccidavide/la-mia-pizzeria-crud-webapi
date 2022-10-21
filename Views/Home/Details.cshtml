@@ -1,4 +1,4 @@
-﻿@using System.Text.Json;
+﻿
 @{
     ViewData["Title"] = "Home Page";
     Layout = "_MyLayout";
@@ -19,7 +19,7 @@
     <div class="js_pizza_table text-center m-auto w-50">
     </div>
     <div>
-        <form onsubmit="UpdatePizza(event)">
+        <form onsubmit="UpdatePizza(event)" class=" form-update" >
             <div class="mb-3">
                 <strong>Nome:</strong>
                 <input id="pizzaName" class="d-block w-100" />
@@ -76,149 +76,174 @@
 
 <script type="text/javascript">
 
-    let pizza;
+    
+    let formOpened = false;
+    getPizza();
+
+   
+
+    function openForm(formBool) {
+        !formBool;
+        console.log(formBool)
+        if (formBool) {
+            document.querySelector('.modify-btn').classList.remove("d-none")
+        } else {
+            document.querySelector('.modify-btn').classList.add("d-none")
+        }
+    }
 
     //id = window.location.pathname.split('/')[3];
-    axios.get('/api/pizza/' + @Model).then(
-        result => {
-            
-            pizza = result.data
-            document.querySelector('.js_loading').classList.add('d-none');
-            if (result.data.length == 0) {
-                document.querySelector('.js_no_pizza').classList.remove('d-none');
-                document.querySelector('.js_pizza_table').classList.add('d-none');
-            }
-            document.querySelector('.js_no_pizza').classList.add('d-none');
-            document.querySelector('.js_pizza_table').innerHTML = '';
+    function getPizza(){
+        debugger;
+        axios.get('/api/pizza/getpizza/' + @Model).then(
+            result => {
+                console.log("resss",result.data)
+                let pizza = [];
+                pizza = result.data
+                document.querySelector('.js_loading').classList.add('d-none');
+                if (result.data.length == 0) {
+                    document.querySelector('.js_no_pizza').classList.remove('d-none');
+                    document.querySelector('.js_pizza_table').classList.add('d-none');
+                }
+                document.querySelector('.js_no_pizza').classList.add('d-none');
+                document.querySelector('.js_pizza_table').innerHTML = '';
 
-            pizza = result.data;
+                pizza = result.data;
 
-            
-            document.querySelector('.js_pizza_table').innerHTML +=
-          
+                document.querySelector('.js_pizza_table').innerHTM ='';
+                document.querySelector('.js_pizza_table').innerHTML +=
 
-                `
-                    <div class="p-3">
-                        <form onsubmit="UpdatePizza(event)">
-                      <div class="pizza_menu card col mb-3 p-2 m-auto">
-                       <img class="card-img-top w-100" src="${pizza.image}" />
-                        <div class="card-body text-black">
-                        <h2><strong>${pizza.name}</strong></h2>
-                        <div><strong>Ingredienti:</strong></div>
-                        <div class="js_ingredients">
-                        </div>
-                        <span><strong>Prezzo:</strong> ${pizza.price} € </span>
-                        <div>
-                             <button class="btn btn-danger delete-btn" > Elimina</button>
-                                 <button class="btn btn-warning modify-btn" > Modifica</button>
-                            </div>
-                        </div>
-                        </div>
-                     </form>
-                      </div>
-                 `;
-
-            document.querySelector("#pizzaName").value = pizza.name
-            document.querySelector("#pizzaDescription").value = pizza.description
-            document.querySelector("#pizzaImage").value = pizza.image
-            document.querySelector("#pizzaPrice").value = pizza.price
-            
-            // Render to page ingredinets list
-            result.data.ingredients.forEach(ingredient => {
-               
-                document.querySelector('.js_ingredients').innerHTML +=
-                    `
-                            <span class="fs-5">${ingredient.name}</span>
-                    
-                    `
-            });
-
-            document.querySelector(".delete-btn").addEventListener("click", (e) => {
-              
-
-                axios.delete('/api/pizza/' + @Model).then(res =>{
-                    console.log(res)
-
-                    window.location.href = "/";
-                }).catch(e=>{
-                    console.log(e)
-                })
-            })
-
-            // Get category list
-            axios.get('/api/category/').then(res => {
-
-                res.data.forEach(category => {
-                    if (category.id == pizza.categoryId) {
-                        document.querySelector('.js_form_categories').innerHTML += `
-
-                           <option selected value="${category.id}">${category.name}</option>
 
                     `
-                    } else {
-                        document.querySelector('.js_form_categories').innerHTML += `
-
-                           <option value="${category.id}">${category.name}</option>
-
-                    `
-                    }
-
-                })
-
-            }).catch(err => {
-                console.log(err)
-            })
-            // Get ingredients list
-            axios.get('/api/ingredient/').then(res => {
-
-                res.data.forEach(ingredient => {
-
-                    let ingredientIds = [];
-
-                    pizza.ingredients.forEach(ingredientArray => {
-
-                        ingredientIds.push(ingredientArray.ingredientId)
-                    })
-
-
-
-                    if (ingredientIds.includes(ingredient.ingredientId)) {
-                        document.querySelector('.js_form_ingredients').innerHTML +=
-                            `
-                     <option selected value="${ingredient.ingredientId}">${ingredient.name}</option>
-
-                    `
-
-                    } else {
-                        document.querySelector('.js_form_ingredients').innerHTML +=
-                            `
-                        <option value="${ingredient.ingredientId}">${ingredient.name}</option>
-
-                    `
-                    }
-                })
-            }).catch(err => {
-                console.log(err)
-            })
-
-
-        }
-    ).catch(
-        error => {
-            console.log(error);
-            document.querySelector('.js_pizza_table').innerHTML +=
-
-                `
                         <div class="p-3">
-                          <p>Ops qualcosa è andato storto!</p>
+                            <form onsubmit="UpdatePizza(event)">
+                          <div class="pizza_menu card col mb-3 p-2 m-auto">
+                           <img class="card-img-top w-100" src="${pizza.image}" />
+                            <div class="card-body text-black">
+                            <h2><strong>${pizza.name}</strong></h2>
+                            <div><strong>Ingredienti:</strong></div>
+                            <div class="js_ingredients">
+                            </div>
+                            <span><strong>Prezzo:</strong> ${pizza.price} € </span>
+                                 </form>
+                            <div>
+                                 <button class="btn btn-danger delete-btn" > Elimina</button>
+                                     <button class="btn btn-warning modify-btn" > Modifica</button>
+                                </div>
+                            </div>
+                            </div>
+                        
                           </div>
                      `;
-        }
-    )
+
+                document.querySelector("#pizzaName").value = pizza.name
+                document.querySelector("#pizzaDescription").value = pizza.description
+                document.querySelector("#pizzaImage").value = pizza.image
+                document.querySelector("#pizzaPrice").value = pizza.price
+
+                // Render to page ingredinets list
+                result.data.ingredients.forEach(ingredient => {
+
+                    document.querySelector('.js_ingredients').innerHTML +=
+                        `
+                                <span class="fs-5">${ingredient.name}</span>
+
+                        `
+                });
+
+                document.querySelector(".delete-btn").addEventListener("click", (e) => {
+
+
+                    axios.delete('/api/pizza/delete/' + @Model).then(res => {
+                        console.log(res)
+
+                        window.location.href = "/";
+                    }).catch(e => {
+                        console.log(e)
+                    })
+                })
+                /// Hidden btn
+                ///document.querySelector('.modify-btn').addEventListener("click", openForm)
+
+                // Get category list
+                axios.get('/api/category/').then(res => {
+                    document.querySelector('.js_form_categories').innerHTML = '';
+                    res.data.forEach(category => {
+                        
+                        if(category.id == pizza.categoryId){
+                           
+                            document.querySelector('.js_form_categories').innerHTML += `
+
+                               <option selected value="${category.id}">${category.name}</option>
+
+                        `
+                        }else{
+                            document.querySelector('.js_form_categories').innerHTML += `
+
+                               <option value="${category.id}">${category.name}</option>
+
+                        `
+                        }
+
+                    })
+
+                }).catch(err => {
+                    console.log(err)
+                })
+                // Get ingredients list
+                axios.get('/api/ingredient/').then(res => {
+                    document.querySelector('.js_form_ingredients').innerHTML = '';
+                    res.data.forEach(ingredient => {
+
+                        let ingredientIds = [];
+
+                        pizza.ingredients.forEach(ingredientArray => {
+
+                            ingredientIds.push(ingredientArray.ingredientId)
+                        })
+
+
+
+                        if (ingredientIds.includes(ingredient.ingredientId)) {
+                            document.querySelector('.js_form_ingredients').innerHTML +=
+                                `
+                         <option selected value="${ingredient.ingredientId}">${ingredient.name}</option>
+
+                        `
+
+                        } else {
+                            document.querySelector('.js_form_ingredients').innerHTML +=
+                                `
+                            <option value="${ingredient.ingredientId}">${ingredient.name}</option>
+
+                        `
+                        }
+                    })
+                }).catch(err => {
+                    console.log(err)
+                })
+
+
+            }
+        ).catch(
+            error => {
+                console.log(error);
+                document.querySelector('.js_pizza_table').innerHTML +=
+
+                    `
+                            <div class="p-3">
+                              <p>Ops qualcosa è andato storto!</p>
+                              </div>
+                         `;
+            }
+        )
+
+    }
     
     ///////////////////////
 
     function UpdatePizza(e){
+        debugger;
         e.preventDefault();
        
         let pizzaName = document.querySelector("#pizzaName").value;
@@ -234,9 +259,9 @@
             return option.value;
         });
 
-        console.log(selected)
+        
 
-        axios.put('/api/pizza/' + @Model,  {
+        axios.put('/api/pizza/put/' + @Model,  {
             formPizza:{
                 
             },
@@ -252,7 +277,9 @@
 
         }).then(res => {
             console.log(res)
+            
             alert("pizza modificata correttamente")
+            getPizza();
         }).catch(e => {
             console.log(e)
             alert("pizza non modificata, qualcosa è andato storto")

@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 
 namespace la_mia_pizzeria_crud_mvc.Controllers.Api
 {
-    [Route("api/pizza/")]
+    [Route("api/pizza/[action]")]
     [ApiController]
     public class PizzaController : ControllerBase
     {
@@ -68,15 +68,14 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("StoreDataExcetipn", ex.Message);
                     return NotFound();
-
                 }
 
                
             }
         }
 
+        
         [HttpDelete("{id:int}")]
         public IActionResult Delete(int id)
         {

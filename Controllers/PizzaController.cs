@@ -8,25 +8,30 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Data.SqlClient.Server;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Authorization;
+using la_mia_pizzeria_post.Repository;
 
 namespace la_mia_pizzeria_crud_mvc.Controllers
 {
     [Authorize]
     public class PizzaController : Controller
     {
+        PizzaRepository _rep;
         PizzaContext _db;
         List<Category> _categories;
         List<Ingredient> _ingredients;
         PizzasCategories pizzasCategories;
+        
 
         public PizzaController()
         {
-            _db = new PizzaContext();
+            _rep = new PizzaRepository();
+            this._db = _rep._db ; 
             this._categories = _db.Categories.ToList();
             this._ingredients = _db.Ingredients.ToList();
             this.pizzasCategories = new PizzasCategories();
             pizzasCategories.Categories = _categories;
             pizzasCategories.Ingredients = _ingredients;
+            
         }
         /*
          CREATE
@@ -73,19 +78,17 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            List<Pizza> myMenu = new List<Pizza>();
-
-            myMenu = _db.Pizzas.OrderBy(pizza => pizza.Name).Include("Category").ToList<Pizza>();
-
+             
+            List<Pizza>  myMenu = _rep.getPizza();
+            
 
             return View("Index", myMenu);
         }
 
         public IActionResult Details(int id)
         {
-            Pizza pizza;
-
-            pizza = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).Include(dbPizza => dbPizza.Category).First();
+           
+            Pizza pizza = _rep.GetPizzaFromId(id);
 
             return View("Show", pizza);
         }
@@ -96,7 +99,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         [HttpGet]
         public IActionResult Update(int id)
         {
-            Pizza pizzaToUpdate = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).Include(dbPizza => dbPizza.Category).Include(dbPizza => dbPizza.Ingredients).First();
+            Pizza pizzaToUpdate = _rep.GetPizzaFromId(id);
 
 
             if (pizzaToUpdate == null)
@@ -122,7 +125,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
                 return View("Update", formPizza);
             }
 
-            Pizza pizzaToUpdate = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).Include("Ingredients").First();
+            Pizza pizzaToUpdate = _rep.GetPizzaFromId(id); ;
 
             if (pizzaToUpdate == null)
             {
