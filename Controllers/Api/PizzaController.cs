@@ -17,8 +17,10 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
         PizzaRepository _rep;
         public PizzaController()
         {
-            _db = new PizzaContext();
+            
             _rep = new PizzaRepository();
+            _db = _rep._db;
+
         }
 
         public IActionResult Get(string? title)

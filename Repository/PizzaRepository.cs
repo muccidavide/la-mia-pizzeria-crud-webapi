@@ -66,14 +66,12 @@ namespace la_mia_pizzeria_post.Repository
 
         public List<Ingredient>? GetSelectedIngredients(PizzasCategories formPizza)
         {
-            if(formPizza.SelectedIngredients is not null)
-            {
+
+            if (formPizza.SelectedIngredients is not null)
                 return _db.Ingredients.Where(ingredient => formPizza.SelectedIngredients.Contains(ingredient.IngredientId)).ToList<Ingredient>();
-            }
             else
-            {
                 return null;
-            }
+            
             
         }
 
