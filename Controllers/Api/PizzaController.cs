@@ -1,5 +1,6 @@
 ﻿using la_mia_pizzeria_crud_mvc;
 using la_mia_pizzeria_post.Models;
+using la_mia_pizzeria_post.Repository;
 using la_mia_pizzeria_static.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,21 +14,24 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
         
 
         PizzaContext _db;
+        PizzaRepository _rep;
         public PizzaController()
         {
             _db = new PizzaContext();
+            _rep = new PizzaRepository();
         }
 
         public IActionResult Get(string? title)
         {
            if(title == null)
             {
-                List<Pizza> pizzas = _db.Pizzas.ToList();
+                List<Pizza> pizzas = _rep.getPizza();
                 return Ok(pizzas);
             }
             else
             {
-                List<Pizza> pizzas = _db.Pizzas.Where(p => p.Name.ToLower().Contains(title)).ToList();
+
+                List<Pizza>? pizzas = _db.Pizzas.Where(p => p.Name != null && p.Name.ToLower().Contains(title)).ToList();
                 return Ok(pizzas);
             }
             
@@ -36,7 +40,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
         [HttpGet("{id:int}")]
         public IActionResult GetPizza(int id)
         {
-            Pizza pizza = _db.Pizzas.Include("Ingredients").SingleOrDefault(pizza => pizza.PizzaId == id);
+            Pizza? pizza = _rep.GetPizzaFromId(id, true);
 
             return Ok(pizza);
         }
@@ -44,7 +48,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
         [HttpPut("{id:int}")]
         public IActionResult Put(int id, [FromBody] PizzasCategories formPizza)
         {
-            Pizza pizzaToUpdate = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).Include(dbPizza => dbPizza.Category).Include(dbPizza => dbPizza.Ingredients).First();
+            Pizza? pizzaToUpdate = _rep.GetPizzaFromId(id, true);
             if (pizzaToUpdate == null)
             {
                 return NotFound();
@@ -56,7 +60,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
                 pizzaToUpdate.Image = formPizza.Pizza.Image;
                 pizzaToUpdate.Price = formPizza.Pizza.Price;
                 pizzaToUpdate.CategoryId = formPizza.Pizza.CategoryId;
-                pizzaToUpdate.Ingredients = _db.Ingredients.Where(ingredient => formPizza.SelectedIngredients.Contains(ingredient.IngredientId)).ToList<Ingredient>();
+                pizzaToUpdate.Ingredients = _rep.GetSelectedIngredients(formPizza);
                 
                 try
                 {
@@ -77,7 +81,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
         [HttpDelete("{id:int}")]
         public IActionResult Delete(int id)
         {
-            Pizza pizzaToRemove = _db.Pizzas.SingleOrDefault(pizza => pizza.PizzaId == id);
+            Pizza? pizzaToRemove = _rep.GetPizzaFromId(id,false);
 
             if(pizzaToRemove == null)
             {

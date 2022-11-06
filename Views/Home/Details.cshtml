@@ -9,7 +9,7 @@
 <div class="text-center m-auto container">
     <h1>Pizzeria da Davide</h1>
 </div>
-<div class="js_loading">
+<div class="js_loading text-center">
     <img width="100" src="/img/loader.gif" />
     <p>Loading...</p>
 </div>
@@ -72,8 +72,6 @@
 
     let formOpened = false;
     getPizza();
-
-
 
     function openForm(formBool) {
         !formBool;
@@ -201,25 +199,26 @@
                             document.querySelector('.js_form_ingredients').innerHTML +=
                                 `
 
-                                                 <div class="mb-3 col">
-                                                        <input class="form-check-input" checked type="checkbox" value="${ingredient.IngredientId}" id="checkbox_${ingredient.IngredientId}" name="SelectedIngredients">
-                                                <label class="form-check-label" for="checkbox_${ingredient.IngredientId}">
-                                                    ${ingredient.name}
-                                                </label>
-                                            </div>
+                                <div class="mb-3 col">
+                                     <input class="form-check-input checked" checked type="checkbox" value="${ingredient.ingredientId}" id="checkbox_${ingredient.ingredientId}" name="SelectedIngredients[]">
+                                 <label class="form-check-label" for="checkbox_${ingredient.ingredientId}">
+                                 ${ingredient.name}
+                                 </label>
+                                </div>
 
-                                            `
+                                `
 
                         } else {
                             document.querySelector('.js_form_ingredients').innerHTML +=
                                 `
-                                                     <div class="mb-3 col">
-                                                            <input class="form-check-input"  type="checkbox" value="${ingredient.IngredientId}" id="checkbox_${ingredient.IngredientId}" name="SelectedIngredients">
-                                                    <label class="form-check-label" for="checkbox_${ingredient.IngredientId}">
-                                                        ${ingredient.name}
-                                                    </label>
+                                 <div class="mb-3 col">
+                                  <input class="form-check-input"  type="checkbox" value="${ingredient.ingredientId}" id="checkbox_${ingredient.ingredientId}" name="SelectedIngredients[]">
+                                   <label class="form-check-label" for="checkbox_${ingredient.ingredientId}">
+                                    ${ingredient.name}
+                                    </label>
+                                 </div>
 
-                                            `
+                                `
                         }
                     })
                 }).catch(err => {
@@ -234,10 +233,10 @@
                 document.querySelector('.js_pizza_table').innerHTML +=
 
                     `
-                                                <div class="p-3">
-                                                  <p>Ops qualcosa è andato storto!</p>
-                                                  </div>
-                                             `;
+                    <div class="p-3">
+                    <p>Ops qualcosa è andato storto!</p>
+                    </div>
+                    `;
             }
         )
 
@@ -246,7 +245,7 @@
     ///////////////////////
 
     function UpdatePizza(e) {
-        debugger;
+        
         e.preventDefault();
 
         let pizzaName = document.querySelector("#pizzaName").value;
@@ -254,15 +253,19 @@
         let pizzaImage = document.querySelector("#pizzaImage").value
         let pizzaPrice = document.querySelector("#pizzaPrice").value
         let pizzaCategory = document.querySelector(".js_form_categories").value
-        let pizzaIngredients = document.querySelector(".js_form_ingredients")
+        let pizzaIngredientsInput = document.getElementsByName("SelectedIngredients[]")
 
-        var selected = Array.from(pizzaIngredients.options).filter(function (option) {
-            return option.selected;
-        }).map(function (option) {
-            return option.value;
-        });
+        console.log(pizzaIngredientsInput);
+        let selected = [];
+        for (let i = 0; i < pizzaIngredientsInput.length; i++) {
+            if(pizzaIngredientsInput[i].checked == true){
+                let value = pizzaIngredientsInput[i].value;
+                selected.push(value);
+            }
+               
 
-
+            }
+        console.log(selected);
 
         axios.put('/api/pizza/put/' + @Model, {
             formPizza: {

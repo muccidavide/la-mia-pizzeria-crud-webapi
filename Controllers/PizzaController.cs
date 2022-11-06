@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Design;
 using la_mia_pizzeria_static.Data;
-using Microsoft.IdentityModel.Tokens;
 using la_mia_pizzeria_post.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
-using Microsoft.Data.SqlClient.Server;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Authorization;
 using la_mia_pizzeria_post.Repository;
 
@@ -26,8 +21,8 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         {
             _rep = new PizzaRepository();
             this._db = _rep._db;
-            this._categories = _db.Categories.ToList();
-            this._ingredients = _db.Ingredients.ToList();
+            this._categories = _rep.GetCategoriesList();
+            this._ingredients = _rep.GetIngredientsList();
             this.pizzasCategories = new PizzasCategories();
             pizzasCategories.Categories = _categories;
             pizzasCategories.Ingredients = _ingredients;
@@ -54,7 +49,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
                 formPizza.Ingredients = _ingredients;
                 if(formPizza.SelectedIngredients != null)
                 {
-                    formPizza.Pizza.Ingredients = _db.Ingredients.Where(ingredient => formPizza.SelectedIngredients.Contains(ingredient.IngredientId)).ToList<Ingredient>();
+                    formPizza.Pizza.Ingredients = _rep.GetSelectedIngredients(formPizza);
                 }
                 
                 return View("Create", formPizza);
@@ -62,7 +57,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
 
             if (formPizza.SelectedIngredients != null)
             {
-                formPizza.Pizza.Ingredients = _db.Ingredients.Where(ingredient => formPizza.SelectedIngredients.Contains(ingredient.IngredientId)).ToList<Ingredient>();
+                formPizza.Pizza.Ingredients = _rep.GetSelectedIngredients(formPizza);
             }
 
             try
@@ -95,7 +90,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         public IActionResult Details(int id)
         {
 
-            Pizza pizza = _rep.GetPizzaFromId(id, true);
+            Pizza? pizza = _rep.GetPizzaFromId(id, true);
             if (pizza == null)
             {
                 return NotFound();
@@ -109,7 +104,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         [HttpGet]
         public IActionResult Update(int id)
         {
-            Pizza pizzaToUpdate = _rep.GetPizzaFromId(id,true);
+            Pizza? pizzaToUpdate = _rep.GetPizzaFromId(id,true);
 
 
             if (pizzaToUpdate == null)
@@ -119,7 +114,6 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             else
             {
                 pizzasCategories.Pizza = pizzaToUpdate;
-                //
 
                 return View("Update", pizzasCategories);
             }
@@ -129,13 +123,13 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Update(int id, PizzasCategories formPizza)
         {
-            Pizza pizzaToUpdate = _rep.GetPizzaFromId(id, true);
+            Pizza? pizzaToUpdate = _rep.GetPizzaFromId(id, true);
 
             if (!ModelState.IsValid)
             {
                 formPizza.Categories = _categories;
                 formPizza.Ingredients = _ingredients;
-                formPizza.Pizza.Ingredients = _db.Ingredients.Where(ingredient => formPizza.SelectedIngredients.Contains(ingredient.IngredientId))?.ToList<Ingredient>();
+                formPizza.Pizza.Ingredients = _rep.GetSelectedIngredients(formPizza);
 
                 return View("Update", formPizza);
             }
@@ -151,7 +145,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
                 pizzaToUpdate.Image = formPizza.Pizza.Image;
                 pizzaToUpdate.Price = formPizza.Pizza.Price;
                 pizzaToUpdate.CategoryId = formPizza.Pizza.CategoryId;
-                pizzaToUpdate.Ingredients = _db.Ingredients.Where(ingredient => formPizza.SelectedIngredients.Contains(ingredient.IngredientId)).ToList<Ingredient>();
+                pizzaToUpdate.Ingredients = _rep.GetSelectedIngredients(formPizza);
 
                 try
                 {
@@ -178,7 +172,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
-             Pizza pizzaToRemove = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).First();
+             Pizza? pizzaToRemove = _rep.GetPizzaFromId(id,false);
 
             if (pizzaToRemove == null)
             {

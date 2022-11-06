@@ -21,7 +21,7 @@ namespace la_mia_pizzeria_post.Repository
             return menu;
         }
 
-        public Pizza GetPizzaFromId(int id, bool ingredientsList)
+        public Pizza? GetPizzaFromId(int id, bool ingredientsList)
         {
             Pizza? pizza = null;
 
@@ -52,6 +52,30 @@ namespace la_mia_pizzeria_post.Repository
 
         }
 
+        
+
+        public List<Category> GetCategoriesList()
+        {
+            return _db.Categories.ToList();
+        }
+
+        public List<Ingredient> GetIngredientsList()
+        {
+            return _db.Ingredients.ToList();
+        }
+
+        public List<Ingredient>? GetSelectedIngredients(PizzasCategories formPizza)
+        {
+            if(formPizza.SelectedIngredients is not null)
+            {
+                return _db.Ingredients.Where(ingredient => formPizza.SelectedIngredients.Contains(ingredient.IngredientId)).ToList<Ingredient>();
+            }
+            else
+            {
+                return null;
+            }
+            
+        }
 
     }
 }

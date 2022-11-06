@@ -13,18 +13,24 @@ namespace la_mia_pizzeria_crud_mvc.Validations
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value == null)
+            if (value is null && ValidationResult.Success is not null)
                 return ValidationResult.Success;
 
-            string fieldValue = (string)value;
+            string? fieldValue = value as string;
 
-            int wordsNumber = fieldValue.Trim().Split(' ').Length;
+            if (fieldValue is not null)
+            {
+                int wordsNumber = fieldValue.Trim().Split(' ').Length;
+                if (wordsNumber < 5 || ValidationResult.Success is null)
+                    return new ValidationResult("Il campo deve contenere almeno 5 parole");
+                else
 
-            if (wordsNumber < 5)
+                    return ValidationResult.Success;
+            }
+            else {
                 return new ValidationResult("Il campo deve contenere almeno 5 parole");
 
-
-            return ValidationResult.Success;
+            }
 
         }
     }
