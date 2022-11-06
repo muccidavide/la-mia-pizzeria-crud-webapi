@@ -13,8 +13,9 @@ namespace la_mia_pizzeria_post.Models
 
         public Pizza Pizza { get; set; }
         public List<Category> Categories { get; set; }
-        public List<Ingredient> Ingredients { get; set; }
-        public List<int> SelectedIngredients { get; set; }   
+        public List<Ingredient>? Ingredients { get; set; }
+        public List<int>? SelectedIngredients { get; set; }   
+        
 
     }
 }

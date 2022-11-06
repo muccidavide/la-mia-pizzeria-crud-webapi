@@ -1,4 +1,4 @@
-﻿@model Pizza 
+﻿@model Pizza
 
 @{
     ViewData["Title"] = $"Pizza {Model.Name}";
@@ -6,11 +6,20 @@
 
 <div class="text-center">
 
-    <img width="500" src="@Model.Image" />
-    <h2>@Model.Name</h2>
-    <p>@Model.Description</p>
-    <p>@Model.Price €</p>
-    <p>@Model.Category.Name </p>
+    <div class="pizza_menu card col mb-3 p-2 m-auto">
+        <img class="card-img-top w-100" src="@Model.Image" />
+        <div class="card-body text-black">
+            <h2><strong>@Model.Name</strong></h2>
+            <p>@Model.Description</p>
+
+            <span><strong>Prezzo:</strong> @Model.Price € </span>
+            <a class="btn btn-primary btn-sm d-block mb-1" width="100" href="@Url.Action("Update", "Pizza", new{id = Model.PizzaId})">Modifica</a>
+            <form asp-controller="Pizza" asp-action="Delete" asp-route-id="@Model.PizzaId" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger btn-sm d-block w-100">Elimina</button>
+            </form>
+        </div>
+    </div>
 
 </div>
 

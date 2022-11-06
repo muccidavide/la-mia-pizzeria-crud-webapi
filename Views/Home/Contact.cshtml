@@ -3,26 +3,27 @@
 @model Message;
 
 <div>
+    <h2>Inviaci un messaggio:</h2>
     <form onsubmit="sendMessage(event)">
 
         <div class="mb-3">
             <strong>Titolo:</strong>
-            <input id="form-title" type="text" class="d-block w-100" required />
+            <input id="form-title" type="text" class="d-block form-control w-100" required />
 
         </div>
         <div class="mb-3">
             <strong>Email:</strong>
-            <input id="form-email" type="email" class="d-block w-100" required />
+            <input id="form-email" type="email" class="d-block form-control w-100" required />
 
         </div>
         <div class="mb-3">
             <strong>Nome Completo:</strong>
-            <input id="form-fullName" type="text" class="d-block w-100" required />
+            <input id="form-fullName" type="text" class="d-block form-control w-100" required />
 
         </div>
         <div class="mb-3">
             <strong>Messaggio:</strong>
-            <textarea rows="5" id="form-body" type="text" class="d-block w-100" required> </textarea>
+            <textarea rows="5" id="form-body" type="text" class="d-block form-control w-100" required> </textarea>
 
         </div>
 

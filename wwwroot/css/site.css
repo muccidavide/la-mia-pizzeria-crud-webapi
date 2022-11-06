@@ -1,3 +1,5 @@
+/*GENERAL & RESET */
+
 html {
   font-size: 14px;
 }
@@ -28,9 +30,7 @@ a{
 img{
     max-width:100%;
 }
-.nav.navbar-nav.navbar-right li a {
-    color: white;
-}
+
 
 main {
     color: white;
@@ -47,7 +47,17 @@ footer, header{
     color: white;
     background-color: black;
     text-align:center;
+   
 }
+
+/*NAVBAR*/
+
+.nav.navbar-nav.navbar-right li a {
+    color: white;
+}
+
+/*MAIN*/
+
 .pizza_menu {
     min-height: 100%;
     width: 100%;

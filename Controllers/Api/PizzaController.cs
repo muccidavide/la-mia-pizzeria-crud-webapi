@@ -1,15 +1,12 @@
 ﻿using la_mia_pizzeria_crud_mvc;
 using la_mia_pizzeria_post.Models;
 using la_mia_pizzeria_static.Data;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.Json.Serialization;
 
 namespace la_mia_pizzeria_crud_mvc.Controllers.Api
 {
-    [Route("api/pizza/[action]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class PizzaController : ControllerBase
     {
@@ -68,6 +65,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine(ex.Message);
                     return NotFound();
                 }
 

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace la_mia_pizzeria_post.Controllers.Api
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class IngredientController : ControllerBase
     {

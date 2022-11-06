@@ -20,18 +20,18 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         List<Category> _categories;
         List<Ingredient> _ingredients;
         PizzasCategories pizzasCategories;
-        
+
 
         public PizzaController()
         {
             _rep = new PizzaRepository();
-            this._db = _rep._db ; 
+            this._db = _rep._db;
             this._categories = _db.Categories.ToList();
             this._ingredients = _db.Ingredients.ToList();
             this.pizzasCategories = new PizzasCategories();
             pizzasCategories.Categories = _categories;
             pizzasCategories.Ingredients = _ingredients;
-            
+
         }
         /*
          CREATE
@@ -52,10 +52,18 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             {
                 formPizza.Categories = _categories;
                 formPizza.Ingredients = _ingredients;
+                if(formPizza.SelectedIngredients != null)
+                {
+                    formPizza.Pizza.Ingredients = _db.Ingredients.Where(ingredient => formPizza.SelectedIngredients.Contains(ingredient.IngredientId)).ToList<Ingredient>();
+                }
+                
                 return View("Create", formPizza);
             }
 
-            formPizza.Pizza.Ingredients = _db.Ingredients.Where(ingredient => formPizza.SelectedIngredients.Contains(ingredient.IngredientId)).ToList<Ingredient>();
+            if (formPizza.SelectedIngredients != null)
+            {
+                formPizza.Pizza.Ingredients = _db.Ingredients.Where(ingredient => formPizza.SelectedIngredients.Contains(ingredient.IngredientId)).ToList<Ingredient>();
+            }
 
             try
             {
@@ -78,18 +86,20 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-             
-            List<Pizza>  myMenu = _rep.getPizza();
-            
+
+            List<Pizza> myMenu = _rep.getPizza();
 
             return View("Index", myMenu);
         }
 
         public IActionResult Details(int id)
         {
-           
-            Pizza pizza = _rep.GetPizzaFromId(id);
 
+            Pizza pizza = _rep.GetPizzaFromId(id, true);
+            if (pizza == null)
+            {
+                return NotFound();
+            }
             return View("Show", pizza);
         }
 
@@ -99,7 +109,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         [HttpGet]
         public IActionResult Update(int id)
         {
-            Pizza pizzaToUpdate = _rep.GetPizzaFromId(id);
+            Pizza pizzaToUpdate = _rep.GetPizzaFromId(id,true);
 
 
             if (pizzaToUpdate == null)
@@ -109,6 +119,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
             else
             {
                 pizzasCategories.Pizza = pizzaToUpdate;
+                //
 
                 return View("Update", pizzasCategories);
             }
@@ -118,14 +129,16 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Update(int id, PizzasCategories formPizza)
         {
+            Pizza pizzaToUpdate = _rep.GetPizzaFromId(id, true);
+
             if (!ModelState.IsValid)
             {
                 formPizza.Categories = _categories;
                 formPizza.Ingredients = _ingredients;
+                formPizza.Pizza.Ingredients = _db.Ingredients.Where(ingredient => formPizza.SelectedIngredients.Contains(ingredient.IngredientId))?.ToList<Ingredient>();
+
                 return View("Update", formPizza);
             }
-
-            Pizza pizzaToUpdate = _rep.GetPizzaFromId(id); ;
 
             if (pizzaToUpdate == null)
             {
@@ -165,7 +178,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
-            Pizza pizzaToRemove = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).First();
+             Pizza pizzaToRemove = _db.Pizzas.Where(dbPizza => dbPizza.PizzaId == id).First();
 
             if (pizzaToRemove == null)
             {

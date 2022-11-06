@@ -17,18 +17,18 @@
             @Html.AntiForgeryToken()
             <div class="mb-3">
                 <strong>Nome:</strong>
-                <input asp-for="Pizza.Name" class="d-block w-100" />
+                <input asp-for="Pizza.Name" class="d-block form-control w-100" />
                 <span asp-validation-for="Pizza.Name" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <strong>Descrizione:</strong>
-                <input asp-for="Pizza.Description" class="d-block w-100" />
+                <input asp-for="Pizza.Description" class="d-block form-control w-100" />
                 <span asp-validation-for="Pizza.Description" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
                 <strong>Immagine </strong> <span>(fake img: "/img/img-6.jpeg"):</span>
-                <input asp-for="Pizza.Image" class="d-block w-100" />
+                <input asp-for="Pizza.Image" class="d-block form-control w-100" />
                 <span asp-validation-for="Pizza.Image" class="text-danger"></span>
             </div>
             <strong>Price:</strong>
@@ -55,24 +55,33 @@
                 </select>
                 <span asp-validation-for="Pizza.CategoryId" class="text-danger"></span>
             </div>
-            <div class="mb-3">
-                <strong>Ingredienti:</strong>
-                <select multiple
-                        asp-for="SelectedIngredients"
-                        size="10"
-                        class="form-select">
+            <strong>Ingredienti:</strong>
+            <div class="mb-3 bg-white form-checkbox rounded-2">
+                
+                <div class="row row-cols-3  text-dark p-3">
                     @foreach (Ingredient ingredient in Model.Ingredients)
                     {
                         @if (Model.Pizza.Ingredients != null && Model.Pizza.Ingredients.Contains(ingredient))
                         {
-                            <option selected value="@ingredient.IngredientId">@ingredient.Name</option>
+                            <div class="mb-3 col">
+                                <input class="form-check-input" checked type="checkbox" value="@ingredient.IngredientId" id="checkbox_@ingredient.IngredientId" name="SelectedIngredients">
+                                <label class="form-check-label" for="checkbox_@ingredient.IngredientId">
+                                    @ingredient.Name
+                                </label>
+                            </div>
+
                         }
                         else
                         {
-                            <option value="@ingredient.IngredientId">@ingredient.Name</option>
+                            <div class="mb-3 col">
+                                <input class="form-check-input" type="checkbox" value="@ingredient.IngredientId" id="@ingredient.IngredientId" name="SelectedIngredients">
+                                <label class="form-check-label" for="checkbox_@ingredient.IngredientId">
+                                    @ingredient.Name
+                                </label>
+                            </div>
                         }
                     }
-                </select>
+                </div>
             </div>
 
             <div class="text-end">

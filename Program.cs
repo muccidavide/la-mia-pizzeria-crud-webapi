@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using la_mia_pizzeria_static.Data;
 using System.Text.Json.Serialization;
+using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("PizzaContextConnection") ?? throw new InvalidOperationException("Connection string 'PizzaContextConnection' not found.");
@@ -22,6 +23,13 @@ builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
+builder.Services.AddRazorPages()
+    .AddMvcOptions(options =>
+    {
+        options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(
+            _ => "Il campo è richiesto.");
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -40,6 +48,11 @@ app.UseRouting();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+/*app.MapControllerRoute(
+       name: "default",
+       pattern: "~/api/{controller}/{action}/{id?}",
+       new { controller = "Home", action = "Index" });*/
 
 app.MapControllerRoute(
     name: "default",
